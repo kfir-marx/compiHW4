@@ -1,0 +1,94 @@
+%{
+	
+    #include <iostream>
+	#include <stdlib.h>
+    #include "deaths.hpp"
+    
+	using namespace std;
+
+	extern int yylex();
+	int yyerror(char * message);
+    vector<Table> TableStack;
+    
+    extern string var_name;
+    extern var_type;
+%}
+
+%nonassoc RP
+%nonassoc ELSE
+%token SWITCH CASE NUM BOOL LP LC RC SC COLON CELSIUS FAHRENHEIT KELVIN INT PRINT INPUT ID STRING TRUE FALSE IF WHILE BREAK
+%left NOT
+%left MULT DIV
+%left PLUS MINUS
+%left REL_OP
+%left AND
+%left OR
+%right ASSIGN
+
+%%
+
+Prog                :     MblockStart Statements MblockEnd                             {};
+
+MblockStart          : /*epsilon*/                                                     { TableStack.push_back(Table());};     
+MblockEnd            : /*epsilon*/                                                     { popTable();}
+MVarDef              : /*epsilon*/                                                     {TableStack.back().insertRecord(var_name,var_type);};       
+Statements          :    Statements Statement                                         {};
+Statements          :    Statement                                                    {};  
+                                                                          
+Statement           :   LC MblockStart Statements MblockEnd RC                                              {};
+Statement           :   Type ID SC                                                    {};
+Statement           :   Type ID ASSIGN Exp SC                                         {};
+
+Statement           :   PRINT ID SC                                                   {};
+Statement           :   PRINT STRING SC                                               {};
+Statement           :   INPUT ID SC                                                   {};
+Statement           :   IF LP Exp RP Statement                                        {};
+Statement           :   IF LP Exp RP Statement ELSE Statement                         {};
+
+Statement           :   WHILE LP Exp RP Statement                                     {};
+Statement           :   BREAK SC                                                      {};
+
+Statement           :   SWITCH LP Exp RP LC CasesList RC                              {}; 
+                                                                                     
+CasesList           :   CaseStat CasesList                                            {};
+CasesList           :   CaseStat                                                      {};
+CaseStat            :   CASE NUM TemperatureType COLON Statement BREAK SC             {};
+
+                                                                                      
+TemperatureType     :   CELSIUS                                                       {};
+TemperatureType     :   FAHRENHEIT                                                    {};
+TemperatureType     :   KELVIN                                                        {}; 
+                                                                                   
+Type                :   TemperatureType                                               {};
+Type                :   INT                                                           {};
+Type                :   BOOL                                                          {};
+
+                                                                                   
+Exp                 :   LP Exp RP                                                     {};
+Exp                 :   Exp PLUS Exp                                                  {};
+Exp                 :   Exp MINUS Exp                                                 {};
+Exp                 :   Exp MULT Exp                                                  {};
+Exp                 :   Exp DIV Exp                                                   {};
+Exp                 :   ID                                                            {}; 
+Exp                 :   NUM                                                           {};
+Exp                 :   NUM TemperatureType                                           {};
+Exp                 :   TRUE                                                          {};
+Exp                 :   FALSE                                                         {}; 
+Exp                 :   NOT Exp                                                       {};
+Exp                 :   Exp OR Exp                                                    {};
+Exp                 :   Exp AND Exp                                                   {};
+Exp                 :   Exp REL_OP Exp                                                {};
+
+%%
+
+int main()
+{
+	yyparse();
+}
+
+
+int yyerror(char * message)
+{
+	cout<<"Parse error: "<<message<<endl;
+	exit(0);
+}

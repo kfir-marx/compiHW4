@@ -1,0 +1,13 @@
+C x =4 C;
+
+
+K y = 100 K;        
+if(x>y)
+{
+	print "ok";
+}
+ switch(hhh){
+ case 8 F: {{{{{if(h)print "x";}}}}} break;
+ }
+int z;
+
