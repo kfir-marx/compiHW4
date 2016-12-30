@@ -40,9 +40,7 @@ struct Table{
         offset = TableStack.empty() ? 0 : TableStack.back().offset;
     }
     
-    void insertRecord(char* _name, char* _type){
-    	string name = string(_name);
-    	string type = string(_type);
+    void insertRecord(string name, string type){
         records.push_back(Record(name,type));
         records.back().offset = offset;
         offset++;

@@ -1,7 +1,9 @@
 %{
+	 using namespace std;
 	 #include "hw4_bison.tab.hpp"	
- 	 char* var_name;
- 	 char* var_type;
+ 	 #include <string>
+ 	 string var_name;
+ 	 string var_type;
 %}
 
 %option yylineno
@@ -23,7 +25,7 @@
 "<="|">="|"=="|"!="|">"|"<"      return REL_OP;
 "and"    		                 return AND;
 "or"    		                 return OR;
-C 	                             {var_type = yytext; return CELSIUS;};
+C 	                             {var_type = string(yytext); return CELSIUS;};
 F                                {return FAHRENHEIT;};
 K	                             {return KELVIN;};
 \"[^"]*\"                        return STRING;

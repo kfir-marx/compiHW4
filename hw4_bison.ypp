@@ -2,12 +2,13 @@
 	
     #include <iostream>
 	#include <stdlib.h>
+	#include <string>
     #include "definitions.hpp"
     
 	using namespace std;
 	
-	extern char* var_type;
-	extern char* var_name; 
+	extern string var_type;
+	extern string var_name; 
 	
 	extern int yylex();
 	int yyerror(char * message);
