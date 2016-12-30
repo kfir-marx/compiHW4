@@ -1,5 +1,5 @@
-#ifndef DEATHS_FILE
-#define DEATHS_FILE
+#ifndef DEFS_FILE
+#define DEFS_FILE
 
 #include <vector>
 #include <string>
@@ -15,9 +15,9 @@ typedef struct {
 
 struct Table;
 struct Record;
-extern vector<Table> TableStack;
  
- 
+vector<Table> TableStack;
+
 struct Record{
     string name;
     string type;
@@ -40,7 +40,9 @@ struct Table{
         offset = TableStack.empty() ? 0 : TableStack.back().offset;
     }
     
-    void insertRecord(string name, string type){
+    void insertRecord(char* _name, char* _type){
+    	string name = string(_name);
+    	string type = string(_type);
         records.push_back(Record(name,type));
         records.back().offset = offset;
         offset++;
@@ -63,8 +65,9 @@ Record searchVar(string name){
                 return TableStack[i].records[j];
             }
         }
-    }  
+    }
     return Record(-1);
 }
+
 
 #endif

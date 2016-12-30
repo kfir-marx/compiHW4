@@ -2,16 +2,15 @@
 	
     #include <iostream>
 	#include <stdlib.h>
-    #include "deaths.hpp"
+    #include "definitions.hpp"
     
 	using namespace std;
-
+	
+	extern char* var_type;
+	extern char* var_name; 
+	
 	extern int yylex();
 	int yyerror(char * message);
-    vector<Table> TableStack;
-    
-    extern string var_name;
-    extern var_type;
 %}
 
 %nonassoc RP
@@ -31,12 +30,13 @@ Prog                :     MblockStart Statements MblockEnd                      
 
 MblockStart          : /*epsilon*/                                                     { TableStack.push_back(Table());};     
 MblockEnd            : /*epsilon*/                                                     { popTable();}
-MVarDef              : /*epsilon*/                                                     {TableStack.back().insertRecord(var_name,var_type);};       
+MVarDef              : /*epsilon*/                                                     { TableStack.back().insertRecord(var_name,var_type);}; 
+      
 Statements          :    Statements Statement                                         {};
 Statements          :    Statement                                                    {};  
                                                                           
-Statement           :   LC MblockStart Statements MblockEnd RC                                              {};
-Statement           :   Type ID SC                                                    {};
+Statement           :   LC MblockStart Statements MblockEnd RC                        {};
+Statement           :   Type ID MVarDef SC                                            {};
 Statement           :   Type ID ASSIGN Exp SC                                         {};
 
 Statement           :   PRINT ID SC                                                   {};

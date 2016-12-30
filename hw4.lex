@@ -1,8 +1,7 @@
 %{
-	 #include "hw4_bison.tab.hpp"
-     #include <string>
-     extern string var_name;
-     extern string var_type;
+	 #include "hw4_bison.tab.hpp"	
+ 	 char* var_name;
+ 	 char* var_type;
 %}
 
 %option yylineno
@@ -24,11 +23,11 @@
 "<="|">="|"=="|"!="|">"|"<"      return REL_OP;
 "and"    		                 return AND;
 "or"    		                 return OR;
-C 	                             {var_type = string(yytext); return CELSIUS;};
-F                                {var_type = string(yytext); return FAHRENHEIT;};
-K	                             {var_type = string(yytext); return KELVIN;};
+C 	                             {var_type = yytext; return CELSIUS;};
+F                                {return FAHRENHEIT;};
+K	                             {return KELVIN;};
 \"[^"]*\"                        return STRING;
-"int"                            {var_type = string(yytext); return INT;};
+"int"                            {return INT;};
 "print"	                         return PRINT;
 "input"                          return INPUT;
 "true"                           return TRUE;
@@ -38,15 +37,14 @@ K	                             {var_type = string(yytext); return KELVIN;};
 "while"                          return WHILE;
 "break"                          return BREAK;
 "not"                            return NOT;
-"bool"                           {var_type = string(yytext); return BOOL;};
+"bool"                           {return BOOL;};
 "switch"                         return SWITCH;
 "case"                           return CASE;
-0|[1-9][0-9]*                    return NUM;
-             
-[a-zA-Z_]+                       {var_name = string(yytext); return ID;};
+0|[1-9][0-9]*                    return NUM;            
+[a-zA-Z_]+                       {return ID;};
 
-"//"[^\n]*\n 		             ;
-[ \t]				             ;
-\r\n|\n				             ;
+"//"[^\n]*\n 		             ;		//ignore line comments
+[ \t]				             ;		//ignore spaces and tabs
+\r\n|\n				             ;		//ignore new-line character
 
 %%
